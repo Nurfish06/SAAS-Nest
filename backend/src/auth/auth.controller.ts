@@ -3,6 +3,7 @@ import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { AuthGuard } from '@nestjs/passport';
+import * as express from 'express';
 
 @Controller('auth')
 export class AuthController {
@@ -20,11 +21,11 @@ export class AuthController {
 
   @Get('google')
   @UseGuards(AuthGuard('google'))
-  async googleAuth(@Req() req) {}
+  async googleAuth(@Req() _req: express.Request) {}
 
   @Get('google/callback')
   @UseGuards(AuthGuard('google'))
-  async googleAuthRedirect(@Req() req, @Res() res) {
+  async googleAuthRedirect(@Req() req: express.Request, @Res() res: express.Response) {
     const result = await this.authService.googleLogin(req);
     // Redirect back to frontend with token
     const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3001';
@@ -33,7 +34,7 @@ export class AuthController {
 
   @Get('profile')
   @UseGuards(AuthGuard('jwt'))
-  getProfile(@Req() req) {
+  getProfile(@Req() req: express.Request) {
     return req.user;
   }
 }
